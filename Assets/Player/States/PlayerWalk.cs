@@ -15,17 +15,30 @@ public class PlayerWalk : MoovingState
         _gravity = _playerMovement.Gravity;
     }
 
+    public override void OnEnter()
+    {
+        _playerMovement.velocity = Vector3.zero;
+    }
+
     public override void StateProcess()
     {
-        if (!_floorCheck.IsFloor() && _playerMovement.velocity.y < 0) 
+        Move();
+
+        if (!_floorCheck.IsFloor())
+        {
+            _playerMovement.velocity.y += _gravity * Time.deltaTime;
+        }
+        else
+        {
+            _playerMovement.velocity.y = 0;
+        }
+
+        if (!_floorCheck.IsFloor() && _playerMovement.velocity.y < -2)
         {
             TransitionTo(nameof(PlayerFalling));
             return;
         }
-        
-        Move();
 
-        _playerMovement.velocity.y += _gravity * Time.deltaTime;
     }
 
 
@@ -45,7 +58,7 @@ public class PlayerWalk : MoovingState
         if (x == 0 && z == 0)
         {
             TransitionTo(nameof(PlayerIdle));
-            return Vector3.zero;
+            return new Vector3(x, 0, z);
         }
         else
         {

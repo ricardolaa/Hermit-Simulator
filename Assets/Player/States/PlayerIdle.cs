@@ -21,18 +21,18 @@ public class PlayerIdle : State
 
     public override void StateProcess()
     {
-        if (!_floorCheck.IsFloor() && _playerMovement.velocity.y < 0)
+        if (IsInputDetected())
+        {
+            TransitionTo(nameof(PlayerWalk));
+            return;
+        }
+
+        if (!_floorCheck.IsFloor())
         {
             TransitionTo(nameof(PlayerFalling));
             return;
         }
 
-        if (IsInputDetected())
-        {
-            TransitionTo(nameof(PlayerWalk));
-        }
-
-        _playerMovement.velocity.y += _gravity * Time.deltaTime; 
     }
 
     public override void StateInput(char input)
