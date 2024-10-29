@@ -15,7 +15,7 @@ public class AttackState : PlayerBaseState
     {
         _sword.SetActive(true);
         _animator.SetBool("Attack", true);
-        StartCoroutine(WaitForAnimationToComplete());
+        StartCoroutine(AttackCoroutine());
     }
 
     public override void OnExit()
@@ -23,17 +23,25 @@ public class AttackState : PlayerBaseState
         _sword.SetActive(false);
     }
 
-    private IEnumerator WaitForAnimationToComplete()
+    private IEnumerator AttackCoroutine()
     {
-        float timer = _clip.length;
-        while (timer > 0)
+        while (true)
         {
-            yield return null;
-            timer -= Time.deltaTime;
+            _animator.SetBool("Attack", true);
+
+            yield return new WaitForSeconds(_clip.length);
+
+            if (Input.GetMouseButton(0))
+            {
+                continue;
+            }
+            else
+            {
+                break;
+            }
         }
 
         _animator.SetBool("Attack", false);
         TransitionTo(nameof(PlayerIdle));
     }
-
 }
