@@ -4,20 +4,14 @@ using UnityEngine;
 
 public class PlayerWalk : MoovingState
 {
-    private float _gravity;
-
     private void Start()
     {
-        _characterController = AttachedEntity.GetComponent<CharacterController>();
-        _playerMovement = AttachedEntity.GetComponent<PlayerStateData>();
-        _floorCheck = AttachedEntity.GetComponent<FloorCheck>();
-
-        _gravity = _playerMovement.Gravity;
+        base.InitializeComponents();
     }
 
     public override void OnEnter()
     {
-        _playerMovement.velocity = Vector3.zero;
+        _playerData.velocity = Vector3.zero;
     }
 
     public override void StateProcess()
@@ -32,14 +26,14 @@ public class PlayerWalk : MoovingState
 
         if (!_floorCheck.IsFloor())
         {
-            _playerMovement.velocity.y += _gravity * Time.deltaTime;
+            _playerData.velocity.y += _gravity * Time.deltaTime;
         }
         else
         {
-            _playerMovement.velocity.y += _gravity * -Time.deltaTime;
+            _playerData.velocity.y += _gravity * -Time.deltaTime;
         }
 
-        if (!_floorCheck.IsFloor() && _playerMovement.velocity.y < -2)
+        if (!_floorCheck.IsFloor() && _playerData.velocity.y < -2)
         {
             TransitionTo(nameof(PlayerFalling));
             return;

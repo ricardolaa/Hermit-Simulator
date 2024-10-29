@@ -1,16 +1,14 @@
 using System.Collections;
 using UnityEngine;
 
-public class AttackState : State
+public class AttackState : PlayerBaseState
 {
     [SerializeField] private AnimationClip _clip;
     [SerializeField] private GameObject _sword;
 
-    private Animator _animator;
-
     private void Start()
     {
-        _animator = AttachedEntity.GetComponent<Animator>();    
+        base.InitializeComponents();
     }
 
     public override void OnEnter()

@@ -2,16 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class MoovingState : State
+public abstract class MoovingState : PlayerBaseState
 {
-    protected CharacterController _characterController;
-    protected PlayerStateData _playerMovement;
-    protected FloorCheck _floorCheck;
+    protected float _gravity;
+
+    protected override void InitializeComponents()
+    {
+        base.InitializeComponents();
+
+        _gravity = _playerData.Gravity;
+    }
 
     protected virtual void Move()
     {
-        var _body = AttachedEntity.GetComponent<PlayerStateData>().Body;
-        var _speed = AttachedEntity.GetComponent<PlayerStateData>().Speed;
+        var _body = _playerData.Body;
+        var _speed = _playerData.Speed;
 
         Vector3 direction = _body.transform.TransformDirection(HandleMovementInput());
 

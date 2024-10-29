@@ -5,25 +5,24 @@ using UnityEngine;
 
 public class PlayerFalling : MoovingState
 {
-    private float _gravity;
-
     private const float _jumpBufferTime = 0.3f;
     private float _jumpBufferCounter;
-    
+
     private void Start()
     {
-        _characterController = AttachedEntity.GetComponent<CharacterController>();
-        _playerMovement = AttachedEntity.GetComponent<PlayerStateData>();
-        _floorCheck = AttachedEntity.GetComponent<FloorCheck>();
-
-        _gravity = _playerMovement.Gravity;
+        base.InitializeComponents();
     }
 
     public override void OnEnter()
     {
-        _playerMovement.velocity.y = -2f;
+        _playerData.velocity.y = -2f;
 
         _jumpBufferCounter = 0;
+    }
+
+    public override void OnExit()
+    {
+        _animator.SetBool("Jump", false);
     }
 
     public override void StateProcess()
@@ -63,9 +62,9 @@ public class PlayerFalling : MoovingState
 
     private void Fall()
     {
-        _playerMovement.velocity.y += _gravity * Time.deltaTime;
+        _playerData.velocity.y += _gravity * Time.deltaTime;
 
-        _characterController.Move(_playerMovement.velocity * Time.deltaTime);
+        _characterController.Move(_playerData.velocity * Time.deltaTime);
     }
 
 }

@@ -2,32 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerIdle : State
+public class PlayerIdle : PlayerBaseState
 {
-    private float _gravity;
-
-    private CharacterController _characterController;
-    private PlayerStateData _playerMovement;
-    private FloorCheck _floorCheck;
+    private float _speed;
 
     private void Start()
     {
-        _characterController = AttachedEntity.GetComponent<CharacterController>();
-        _playerMovement = AttachedEntity.GetComponent<PlayerStateData>();
-        _floorCheck = AttachedEntity.GetComponent<FloorCheck>();
-
-        _gravity = _playerMovement.Gravity;
+        base.InitializeComponents();
     }
 
     public override void StateProcess()
     {
+        _speed = Mathf.Sqrt(Mathf.Pow(Input.GetAxis("Horizontal"), 2) + Mathf.Pow(Input.GetAxis("Vertical"), 2));
+        _animator.SetFloat("Speed", _speed);
+
         if (Input.GetMouseButtonDown(0))
         {
             TransitionTo(nameof(AttackState));
             return;
         }
 
-        if (IsInputDetected())
+        if (_speed >= 1)
         {
             TransitionTo(nameof(PlayerWalk));
             return;
@@ -43,7 +38,6 @@ public class PlayerIdle : State
 
     public override void StateInput(char input)
     {
-
         if (Input.GetButtonDown("Jump"))
         {
             TransitionTo(nameof(PlayerJumping));

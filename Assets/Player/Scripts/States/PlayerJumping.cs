@@ -4,21 +4,17 @@ using UnityEngine;
 
 public class PlayerJumping : MoovingState
 {
-    private float _gravity;
     private float _jumpHeight;
 
     private void Start()
     {
-        _characterController = AttachedEntity.GetComponent<CharacterController>();
-        _playerMovement = AttachedEntity.GetComponent<PlayerStateData>();
-        _floorCheck = AttachedEntity.GetComponent<FloorCheck>();
-
-        _gravity = _playerMovement.Gravity;
-        _jumpHeight = _playerMovement.JumpHeight;
+        base.InitializeComponents();
+        _jumpHeight = _playerData.JumpHeight;
     }
 
     public override void OnEnter()
     {
+        _animator.SetBool("Jump", true);
         Jump();
     }
 
@@ -26,10 +22,10 @@ public class PlayerJumping : MoovingState
     {
         Move();
 
-        _playerMovement.velocity.y += _gravity * Time.deltaTime;
+        _playerData.velocity.y += _gravity * Time.deltaTime;
 
-        _characterController.Move(_playerMovement.velocity * Time.deltaTime);
-        if (_playerMovement.velocity.y < 0)
+        _characterController.Move(_playerData.velocity * Time.deltaTime);
+        if (_playerData.velocity.y < 0)
         {
             TransitionTo(nameof(PlayerFalling));
         }
@@ -37,6 +33,6 @@ public class PlayerJumping : MoovingState
 
     private void Jump()
     {
-        _playerMovement.velocity.y = Mathf.Sqrt(_jumpHeight * -2f * _gravity);
+        _playerData.velocity.y = Mathf.Sqrt(_jumpHeight * -2f * _gravity);
     }
 }
