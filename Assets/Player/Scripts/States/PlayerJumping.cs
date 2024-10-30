@@ -4,12 +4,11 @@ using UnityEngine;
 
 public class PlayerJumping : MoovingState
 {
-    private float _jumpHeight;
+    private float _jumpHeight => _playerData.JumpHeight;
 
     private void Start()
     {
         base.InitializeComponents();
-        _jumpHeight = _playerData.JumpHeight;
     }
 
     public override void OnEnter()

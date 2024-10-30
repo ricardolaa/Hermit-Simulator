@@ -4,13 +4,11 @@ using UnityEngine;
 
 public abstract class MoovingState : PlayerBaseState
 {
-    protected float _gravity;
+    protected float _gravity => _playerData.Gravity;
 
     protected override void InitializeComponents()
     {
         base.InitializeComponents();
-
-        _gravity = _playerData.Gravity;
     }
 
     protected virtual void Move()
