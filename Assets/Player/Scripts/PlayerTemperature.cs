@@ -6,7 +6,6 @@ public class PlayerTemperature : MonoBehaviour, ITemperatureDependent
     [SerializeField] private float _currentTemperature = 0f;
     [SerializeField] private float _minAllowedTemperature = 0f;
     [SerializeField] private float _maxAllowedTemperature = 0f;
-    [SerializeField] private float _heatResistance;
 
     public float CurrentTemperature => _currentTemperature;
 
@@ -14,11 +13,9 @@ public class PlayerTemperature : MonoBehaviour, ITemperatureDependent
 
     public float MaxAllowedTemperature => _maxAllowedTemperature;
 
-    public float HeatResistance => _heatResistance;
-
     public (float minTemperature, float maxTemperature) GetOptimalTemperatureRange()
     {
-        return (MinAllowedTemperature + HeatResistance, MaxAllowedTemperature - HeatResistance);
+        return (MinAllowedTemperature, MaxAllowedTemperature);
     }
 
     public bool IsInOptimalTemperature()
@@ -34,7 +31,7 @@ public class PlayerTemperature : MonoBehaviour, ITemperatureDependent
         if (newTemperature == 0)
             return;
 
-        _currentTemperature = _currentTemperature + newTemperature + (newTemperature < 0 ? HeatResistance : -HeatResistance);
+        _currentTemperature = _currentTemperature + newTemperature;
 
         if (!IsInOptimalTemperature())
         {

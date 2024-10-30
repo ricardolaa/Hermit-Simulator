@@ -6,8 +6,6 @@ public interface ITemperatureDependent
 
     float MaxAllowedTemperature { get; }
 
-    float HeatResistance { get; }
-
     void UpdateState();
 
     void OnTemperatureChange(float newTemperature);

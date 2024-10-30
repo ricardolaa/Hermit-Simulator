@@ -73,8 +73,6 @@ public class Fire : MonoBehaviour, IHeatEmitter
         }
     }
 
-
-
     public float GetTemperatureEffect(float distance)
     {
         if (distance > _maxEffectiveDistance)
@@ -85,9 +83,6 @@ public class Fire : MonoBehaviour, IHeatEmitter
 
     public void SetHeatOutput(float newHeatOutput)
     {
-        if (newHeatOutput < 0)
-            throw new ArgumentOutOfRangeException(nameof(newHeatOutput));
-
         _heatOutput = newHeatOutput;
     }
 
