@@ -52,7 +52,7 @@ public class GlobalHeat : MonoBehaviour, IHeatEmitter
     }
 
 
-    public float GetTemperatureEffect(float distance) //distance can be ignored
+    public float GetTemperatureEffect(float distance) //distance can be ignoSred
     {
         return HeatOutput;
     }
