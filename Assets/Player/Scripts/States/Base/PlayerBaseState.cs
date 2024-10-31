@@ -13,9 +13,9 @@ public class PlayerBaseState : State
     {
         _playerData = AttachedEntity.GetComponent<PlayerStateData>();
 
-        _characterController = _playerData.CharacterController;
-        _floorCheck = _playerData.FloorCheck;
-        _animator = _playerData.Animator;
+        _characterController = AttachedEntity.GetComponent<CharacterController>();
+        _floorCheck = AttachedEntity.GetComponent<FloorCheck>();
+        _animator = AttachedEntity.GetComponent<Animator>();
     }
 
 }

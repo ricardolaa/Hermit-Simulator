@@ -91,7 +91,7 @@ public class Fire : MonoBehaviour, IHeatEmitter
 
     public float GetTemperatureEffect(float distance, ITemperatureDependent temperatureDependent)
     {
-        if (distance > MaxEffectiveDistance)
+        if (distance > MaxEffectiveDistance || _degrees == 0)
             return 0;
 
         return GetAmountHeat(distance) * _degreesPerJoule;
@@ -100,8 +100,9 @@ public class Fire : MonoBehaviour, IHeatEmitter
     public void SetDegress(float newDegress)
     {
         if (newDegress < 0)
-            return;
+            throw new ArgumentOutOfRangeException(nameof(newDegress));
 
         _degrees = newDegress;
+        _sphereCollider.radius = MaxEffectiveDistance;
     }
 }
