@@ -1,11 +1,9 @@
 ﻿public interface IHeatEmitter
 {
-    float HeatOutput { get; }
+    float Degress { get; }
     float MaxEffectiveDistance { get; }
 
-    void SetHeatOutput(float newHeatOutput);
+    void SetDegress(float newTemperature);
 
-    float GetTemperatureEffect(float distance);
-
-    void ToggleHeatEmission(bool isActive);
+    float GetTemperatureEffect(float distance, ITemperatureDependent temperatureDependent);
 }

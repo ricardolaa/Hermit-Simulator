@@ -1,23 +1,20 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Fire : MonoBehaviour, IHeatEmitter
 {
-    [SerializeField] private float _heatOutput;
-    [SerializeField] private const float thermalDecayConstant = 0.1f;
     [SerializeField] private float _degrees = 900.0f;
-
-    private Coroutine _temperatureCoroutine;
-
-    private SphereCollider _sphereCollider;
 
     private const float _degreesPerJoule = 0.0005f;
 
-    public float Power => 0.9f * 5.67f * 3.14f * MathF.Pow(10, -8) * MathF.Pow(273.15f + _degrees, 4);
+    private SphereCollider _sphereCollider;
+    private Dictionary<Collider, Coroutine> _temperatureCoroutines = new Dictionary<Collider, Coroutine>();
 
-    public float HeatOutput => _heatOutput;
+    public float Power => 0.9f * 5.67f * 3.14f * MathF.Pow(10, -8) * MathF.Pow(273.15f + _degrees, 4);
     public float MaxEffectiveDistance => MathF.Sqrt(Power / ((0.1f / _degreesPerJoule) * 4 * MathF.PI));
+    public float Degress => _degrees;
 
     private void Awake()
     {
@@ -30,16 +27,18 @@ public class Fire : MonoBehaviour, IHeatEmitter
     {
         if (other.TryGetComponent<ITemperatureDependent>(out var temperatureDependent))
         {
-            _temperatureCoroutine = StartCoroutine(UpdateTemperature(other, temperatureDependent));
+            Coroutine coroutine = StartCoroutine(UpdateTemperature(other, temperatureDependent));
+            _temperatureCoroutines[other] = coroutine;
         }
+
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (_temperatureCoroutine != null)
+        if (other.TryGetComponent<ITemperatureDependent>(out var temperatureDependent))
         {
-            StopCoroutine(_temperatureCoroutine);
-            _temperatureCoroutine = null;
+            StopCoroutine(_temperatureCoroutines[other]);
+            _temperatureCoroutines.Remove(other);
         }
     }
 
@@ -48,7 +47,7 @@ public class Fire : MonoBehaviour, IHeatEmitter
         while (true)
         {
             float distance = Vector3.Distance(transform.position, other.transform.position);
-            float temperatureEffect = GetTemperatureEffect(distance);
+            float temperatureEffect = GetTemperatureEffect(distance, temperatureDependent);
 
             if (distance < MaxEffectiveDistance / 10)
             {
@@ -82,7 +81,7 @@ public class Fire : MonoBehaviour, IHeatEmitter
         return Power / (4 * MathF.PI * distance * distance);
     }
 
-    public float GetTemperatureEffect(float distance)
+    public float GetTemperatureEffect(float distance, ITemperatureDependent temperatureDependent)
     {
         if (distance > MaxEffectiveDistance)
             return 0;
@@ -90,13 +89,8 @@ public class Fire : MonoBehaviour, IHeatEmitter
         return GetAmountHeat(distance) * _degreesPerJoule;
     }
 
-    public void SetHeatOutput(float newHeatOutput)
+    public void SetDegress(float newDegress)
     {
-        _heatOutput = newHeatOutput;
-    }
-
-    public void ToggleHeatEmission(bool isActive)
-    {
-        throw new NotImplementedException();
+        _degrees = newDegress;
     }
 }

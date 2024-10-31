@@ -9,9 +9,8 @@ public class GlobalHeat : MonoBehaviour, IHeatEmitter
     [SerializeField] private float _globalTemperature = 25;
     [SerializeField] private float _heatOutput;
 
-    public float HeatOutput => _heatOutput;
-
     public float MaxEffectiveDistance => float.PositiveInfinity;
+    public float Degress => _globalTemperature;
 
     private List<ITemperatureDependent> _temperatureDependents;
 
@@ -30,9 +29,6 @@ public class GlobalHeat : MonoBehaviour, IHeatEmitter
 
     private IEnumerator UpdateTemperature(ITemperatureDependent temperatureDependent)
     {
-        float k = 0.1f; // Температурная константа
-        if (k <= 0) throw new ArgumentOutOfRangeException(nameof(k));
-
         const float tolerance = 0.01f;
 
         while (true)
@@ -43,27 +39,28 @@ public class GlobalHeat : MonoBehaviour, IHeatEmitter
             }
             else
             {
-                var T = _globalTemperature + (temperatureDependent.CurrentTemperature - _globalTemperature) * MathF.Pow(MathF.E, -k);
-                var dt = T - temperatureDependent.CurrentTemperature;
-                temperatureDependent.OnTemperatureChange(dt);
+                temperatureDependent.OnTemperatureChange(GetTemperatureEffect(0, temperatureDependent));
                 yield return new WaitForSeconds(1);
             }
         }
     }
 
 
-    public float GetTemperatureEffect(float distance) //distance can be ignoSred
+    public float GetTemperatureEffect(float distance, ITemperatureDependent temperatureDependent) //distance can be ignoSred
     {
-        return HeatOutput;
+        float k = 0.1f; // Температурная константа
+        if (k <= 0) throw new ArgumentOutOfRangeException(nameof(k));
+
+        var T = _globalTemperature + (temperatureDependent.CurrentTemperature - _globalTemperature) * MathF.Pow(MathF.E, -k);
+        var dt = T - temperatureDependent.CurrentTemperature;
+        return dt;
     }
 
-    public void SetHeatOutput(float newHeatOutput)
+
+
+    public void SetDegress(float newDegress)
     {
-        throw new System.NotImplementedException();
+        _globalTemperature = newDegress;
     }
 
-    public void ToggleHeatEmission(bool isActive)
-    {
-        throw new System.NotImplementedException();
-    }
 }
