@@ -6,7 +6,6 @@ public class PlayerStateData : MonoBehaviour
     [SerializeField] private GameObject _body;
 
     [SerializeField] private float _speed = 12f;
-    [SerializeField] private float _gravity = -9.81f * 2;
     [SerializeField] private float _jumpHeight = 3f;
 
     [SerializeField] private CharacterController _characterController;
@@ -16,7 +15,7 @@ public class PlayerStateData : MonoBehaviour
     public Vector3 velocity;
 
     public float Speed => _speed;
-    public float Gravity => _gravity;
+    public float Gravity => -Planet.Instance.g * 2;
     public float JumpHeight => _jumpHeight;
     public GameObject Body => _body;
 

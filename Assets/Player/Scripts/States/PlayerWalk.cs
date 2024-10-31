@@ -30,7 +30,7 @@ public class PlayerWalk : MoovingState
         }
         else
         {
-            _playerData.velocity.y += _gravity * -Time.deltaTime;
+            _playerData.velocity.y = 0;
         }
 
         if (!_floorCheck.IsFloor() && _playerData.velocity.y < -2)

@@ -23,6 +23,14 @@ public class Fire : MonoBehaviour, IHeatEmitter
         _sphereCollider.isTrigger = true;
     }
 
+    private void OnValidate()
+    {
+        if (_sphereCollider != null && _degrees > 0)
+        {
+            _sphereCollider.radius = MaxEffectiveDistance;
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.TryGetComponent<ITemperatureDependent>(out var temperatureDependent))
@@ -91,6 +99,9 @@ public class Fire : MonoBehaviour, IHeatEmitter
 
     public void SetDegress(float newDegress)
     {
+        if (newDegress < 0)
+            return;
+
         _degrees = newDegress;
     }
 }

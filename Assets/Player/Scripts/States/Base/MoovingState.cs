@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class MoovingState : PlayerBaseState
 {
-    protected float _gravity => _playerData.Gravity;
+    protected float _gravity => -Planet.Instance.g * 2;
 
     protected override void InitializeComponents()
     {

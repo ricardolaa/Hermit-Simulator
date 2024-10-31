@@ -13,7 +13,7 @@ public class PlayerIdle : PlayerBaseState
 
     public override void StateProcess()
     {
-        _speed = Mathf.Sqrt(Mathf.Pow(Input.GetAxis("Horizontal"), 2) + Mathf.Pow(Input.GetAxis("Vertical"), 2));
+        _speed = 2 * Mathf.Sqrt(Mathf.Pow(Input.GetAxis("Horizontal"), 2) + Mathf.Pow(Input.GetAxis("Vertical"), 2));
         _animator.SetFloat("Speed", _speed);
 
         if (Input.GetMouseButtonDown(0))
