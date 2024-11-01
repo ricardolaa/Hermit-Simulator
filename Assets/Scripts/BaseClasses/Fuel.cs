@@ -11,7 +11,7 @@ public abstract class Fuel : MonoBehaviour
     public virtual float Mass
     {
         get => _mass;
-        protected set => _mass = MathF.Min(0, value);
+        protected set => _mass = MathF.Max(0, value);
     }
 
     public virtual float BurnFuel(float amount)
