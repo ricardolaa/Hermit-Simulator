@@ -6,10 +6,11 @@ public class FireLifetime : MonoBehaviour
 {
     [SerializeField, Range(0, 100)] private float _lifetimePercent = 0;
     [SerializeField, Min(0)] private float _timeNeedToPickFire = 10;
+    [SerializeField] private Fuel _fuel;
     [SerializeField] private ParticleSystem _particleSystem;
 
     private Fire _fire;
-    private const float _temp = 900;
+    private float _temperature => _fuel.FlameTemperature;
 
     public float LifetimePercent
     {
@@ -17,7 +18,7 @@ public class FireLifetime : MonoBehaviour
         private set
         {
             _lifetimePercent = Mathf.Clamp(value, 0, 100);
-            _fire.SetDegress(_temp * (_lifetimePercent / 100));
+            _fire.SetDegress(_temperature * (_lifetimePercent / 100));
             UpdateParticleLifetime();
         }
     }
@@ -28,8 +29,8 @@ public class FireLifetime : MonoBehaviour
     {
         if (_particleSystem != null && _fire != null)
         {
-            _fire.SetDegress(_temp * (_lifetimePercent / 100));
             UpdateParticleLifetime();
+            _fire.SetDegress(_temperature * (_lifetimePercent / 100));
         }
     }
 
@@ -41,6 +42,7 @@ public class FireLifetime : MonoBehaviour
         _fire = GetComponent<Fire>();
         UpdateParticleLifetime();
         StartCoroutine(IncreaseLifetimePercent());
+        StartCoroutine(BurnFuel());
     }
 
     private IEnumerator IncreaseLifetimePercent()
@@ -56,6 +58,25 @@ public class FireLifetime : MonoBehaviour
         }
 
         LifetimePercent = 100;
+    }
+
+    private IEnumerator BurnFuel()
+    {
+        var speed = _fuel.BurnRate;
+
+        while (_fuel.Mass > 0) 
+        {
+            if (speed >= _fuel.Mass)
+            {
+                _fuel.BurnFuel(_fuel.Mass);
+            }
+            else
+            {
+                _fuel.BurnFuel(speed);
+                yield return new WaitForSeconds(1);
+            }
+
+        }
     }
 
     private void UpdateParticleLifetime()

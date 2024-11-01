@@ -5,6 +5,7 @@ static public class FlameTemperatures
     public static readonly Dictionary<string, float> FlameTemperaturesDict = new Dictionary<string, float>
     {
         { "oak", 900},
+        { "coal", 2000},
     };
 
     public static float GetFlameTemperature(string name)
