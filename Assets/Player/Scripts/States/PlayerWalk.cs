@@ -18,9 +18,15 @@ public class PlayerWalk : MoovingState
     {
         Move();
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0))
         {
             TransitionTo(nameof(AttackState));
+            return;
+        }
+
+        if (Input.GetMouseButton(1))
+        {
+            TransitionTo(nameof(GatheringWoodState));
             return;
         }
 

@@ -16,9 +16,15 @@ public class PlayerIdle : PlayerBaseState
         _speed = 2 * Mathf.Sqrt(Mathf.Pow(Input.GetAxis("Horizontal"), 2) + Mathf.Pow(Input.GetAxis("Vertical"), 2));
         _animator.SetFloat("Speed", _speed);
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0))
         {
             TransitionTo(nameof(AttackState));
+            return;
+        }
+
+        if (Input.GetMouseButton(1))
+        {
+            TransitionTo(nameof(GatheringWoodState));
             return;
         }
 
