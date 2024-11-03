@@ -11,12 +11,6 @@ public class ThirdPersonCamera : MonoBehaviour
     private float _currentAngle = 0.0f;
     private float _currentVerticalAngle = 0.0f;
 
-    void Start()
-    {
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
-    }
-
     void LateUpdate()
     {
         float horizontalInput = Input.GetAxis("Mouse X");
