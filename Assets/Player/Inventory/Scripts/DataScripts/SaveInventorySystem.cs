@@ -44,7 +44,7 @@ public class SaveInventorySystem : MonoBehaviour
                 itemQuantityList.SetValue(_inventory, saveData.intList);
             }
 
-            _inventory.inventoryUI.UpdateInventoryUI(itemListInfo.GetValue(_inventory) as List<Item>, itemQuantityList.GetValue(_inventory) as List<int>);
+            _inventory.SlotsStorageUI.UpdateAllSlots(new Inventory());
         }
     }
 

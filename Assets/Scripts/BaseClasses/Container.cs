@@ -3,45 +3,54 @@ using UnityEngine;
 
 public abstract class Container : MonoBehaviour
 {
-    [SerializeField] protected int _slotCount;
+    [SerializeField] int _slotCount;
 
     protected List<Item> _itemList = new List<Item>();
     protected List<int> _quantityList = new List<int>();
 
-    public List<Item> ItemList => _itemList;
-    public List<int> QuantityList => _quantityList;
+    public virtual List<Item> ItemList => _itemList;
+    public virtual List<int> QuantityList => _quantityList;
+    public virtual int SlotCount => _slotCount;
 
     public virtual void AddItem(Item itemAdded, int quantityAdded)
     {
-        int index = _itemList.IndexOf(itemAdded);
+        int index = _itemList.LastIndexOf(itemAdded);
 
         if (itemAdded.Stacable)
         {
             if (index >= 0)
             {
-                _quantityList[index] += quantityAdded;
+                int currentQuantity = _quantityList[index];
+                int availableSpace = itemAdded.MaxInStack - currentQuantity;
+
+                if (availableSpace > 0)
+                {
+                    int quantityToAdd = Mathf.Min(quantityAdded, availableSpace);
+                    _quantityList[index] += quantityToAdd;
+                    quantityAdded -= quantityToAdd;
+                }
+
+                while (quantityAdded > 0 && _itemList.Count < _slotCount)
+                {
+                    _itemList.Add(itemAdded);
+                    int quantityToAdd = Mathf.Min(quantityAdded, itemAdded.MaxInStack);
+                    _quantityList.Add(quantityToAdd);
+                    quantityAdded -= quantityToAdd;
+                }
             }
             else
             {
-                if (_itemList.Count < _slotCount)
+                for (int i = 0; i < quantityAdded; i++)
                 {
-                    _itemList.Add(itemAdded);
-                    _quantityList.Add(quantityAdded);
-                }
-            }
-        }
-        else
-        {
-            for (int i = 0; i < quantityAdded; i++)
-            {
-                if (_itemList.Count < _slotCount)
-                {
-                    _itemList.Add(itemAdded);
-                    _quantityList.Add(1);
-                }
-                else
-                {
-                    break;
+                    if (_itemList.Count < _slotCount)
+                    {
+                        _itemList.Add(itemAdded);
+                        _quantityList.Add(1);
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
             }
         }
@@ -49,27 +58,25 @@ public abstract class Container : MonoBehaviour
 
     public virtual void RemoveItem(Item itemRemoved, int quantityRemoved)
     {
-        int index = _itemList.IndexOf(itemRemoved);
+        int index = _itemList.LastIndexOf(itemRemoved);
 
         if (index >= 0)
         {
             if (itemRemoved.Stacable)
             {
-                if (_quantityList[index] >= quantityRemoved)
+                _quantityList[index] -= quantityRemoved;
+
+                if (_quantityList[index] <= 0)
                 {
-                    _quantityList[index] -= quantityRemoved;
-                    if (_quantityList[index] <= 0)
-                    {
-                        _quantityList.RemoveAt(index);
-                        _itemList.RemoveAt(index);
-                    }
+                    _quantityList.RemoveAt(index);
+                    _itemList.RemoveAt(index);
                 }
             }
             else
             {
                 for (int i = 0; i < quantityRemoved; i++)
                 {
-                    if (_itemList.Count > 0)
+                    if (_itemList.Count > index)
                     {
                         _quantityList.RemoveAt(index);
                         _itemList.RemoveAt(index);
@@ -82,4 +89,30 @@ public abstract class Container : MonoBehaviour
             }
         }
     }
+
+    public virtual Item GetItemAtIndex(int index)
+    {
+        if (index >= 0 && index < _itemList.Count)
+        {
+            return _itemList[index];
+        }
+
+        return null;
+    }
+
+    public virtual int GetQuantityAtIndex(int index)
+    {
+        if (index >= 0 && index < _quantityList.Count)
+        {
+            return _quantityList[index];
+        }
+
+        return 0;
+    }
+
+    public virtual bool HasItemInContainer(Item item)
+    {
+        return item != null && _itemList.Contains(item);
+    }
+
 }
