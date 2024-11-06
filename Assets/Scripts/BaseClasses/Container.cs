@@ -3,16 +3,15 @@ using UnityEngine;
 
 public abstract class Container : MonoBehaviour
 {
-    [SerializeField] int _slotCount;
-
     protected List<Item> _itemList = new List<Item>();
     protected List<int> _quantityList = new List<int>();
 
     public virtual List<Item> ItemList => _itemList;
     public virtual List<int> QuantityList => _quantityList;
-    public virtual int SlotCount => _slotCount;
 
-    public virtual void AddItem(Item itemAdded, int quantityAdded)
+    public abstract int SlotCount { get; }
+
+    public virtual int AddItem(Item itemAdded, int quantityAdded)
     {
         int index = _itemList.LastIndexOf(itemAdded);
 
@@ -30,7 +29,7 @@ public abstract class Container : MonoBehaviour
                     quantityAdded -= quantityToAdd;
                 }
 
-                while (quantityAdded > 0 && _itemList.Count < _slotCount)
+                while (quantityAdded > 0 && _itemList.Count < SlotCount)
                 {
                     _itemList.Add(itemAdded);
                     int quantityToAdd = Mathf.Min(quantityAdded, itemAdded.MaxInStack);
@@ -42,7 +41,7 @@ public abstract class Container : MonoBehaviour
             {
                 for (int i = 0; i < quantityAdded; i++)
                 {
-                    if (_itemList.Count < _slotCount)
+                    if (_itemList.Count < SlotCount)
                     {
                         _itemList.Add(itemAdded);
                         _quantityList.Add(1);
@@ -54,6 +53,8 @@ public abstract class Container : MonoBehaviour
                 }
             }
         }
+
+        return 0;
     }
 
     public virtual void RemoveItem(Item itemRemoved, int quantityRemoved)

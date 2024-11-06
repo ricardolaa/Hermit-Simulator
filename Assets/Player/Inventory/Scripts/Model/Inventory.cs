@@ -1,33 +1,47 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using UnityEngine;
 
-[RequireComponent(typeof(SlotsStorageUI))]
-public class Inventory : Container
+[RequireComponent(typeof(SlotsStorage))]
+public class Inventory : MonoBehaviour
 {
-    [SerializeField] private SlotsStorageUI _slotsStorageUI;
+    [SerializeField] private int _slotCount;
+    [SerializeField] private SlotsStorage _slotsStorage;
 
-    public SlotsStorageUI SlotsStorageUI => _slotsStorageUI;
-    public GameObject InventoryPanel => _slotsStorageUI.SlotsPanel;
+    public SlotsStorage SlotsStorage => _slotsStorage;
+    public GameObject InventoryPanel => _slotsStorage.SlotsPanel;
+
+    public int SlotCount => _slotCount;
 
     private void Awake()
     {
-        if (_slotsStorageUI == null)
-            _slotsStorageUI = GetComponent<SlotsStorageUI>();
+        if (_slotsStorage == null)
+            _slotsStorage = GetComponent<SlotsStorage>();
 
-        if (_slotsStorageUI != null)
-            _slotsStorageUI.CreateSlots(this);
+        if (_slotsStorage != null)
+            _slotsStorage.CreateSlots(this);
     }
 
-    public override void AddItem(Item itemAdded, int quantityAdded)
+    public void AddItem(Item item, int quantity)
     {
-        base.AddItem(itemAdded, quantityAdded);
-        _slotsStorageUI.UpdateAllSlots(this);
+        int numberArrivals = 0;
+        InventorySlotModel slot = _slotsStorage.GetFreeSlotsForItem(item);
+
+        if (slot == null)
+            return;
+
+        while (numberArrivals < quantity)
+        {
+            int remainingToAdd = quantity - numberArrivals;
+            int noAdded = slot.AddItem(item, remainingToAdd);
+
+            numberArrivals += (remainingToAdd - noAdded);
+
+            slot = _slotsStorage.GetFreeSlotsForItem(item);
+
+
+        }
+
     }
 
-    public override void RemoveItem(Item itemRemoved, int quantityRemoved)
-    {
-        base.RemoveItem(itemRemoved, quantityRemoved);
-        _slotsStorageUI.UpdateAllSlots(this);
-    }
-   
 }

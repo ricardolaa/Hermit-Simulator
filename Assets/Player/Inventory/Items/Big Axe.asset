@@ -12,10 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 830a471aa6218094fb4284bf788e3276, type: 3}
   m_Name: Big Axe
   m_EditorClassIdentifier: 
-  itemName: Big Axe
-  ID: 0
-  price: 30
-  Stackable: 0
-  itemIcon: {fileID: 21300000, guid: a3cf4ea4778921841be31a51c3d71b94, type: 3}
-  type: 1
-  weaponDamage: 5
+  _itemName: ff
+  _price: 0
+  _maxInStack: 5
+  _itemIcon: {fileID: 21300000, guid: a3cf4ea4778921841be31a51c3d71b94, type: 3}
+  _type: 0
+  _weaponDamage: 0
