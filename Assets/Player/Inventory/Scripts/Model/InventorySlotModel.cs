@@ -11,10 +11,21 @@ public class InventorySlotModel : Container
 
     public override int AddItem(Item itemAdded, int quantityAdded)
     {
+        int nonArrivals = 0;
+        print(quantityAdded);
+
+        if (_quantityList.Count > 0)
+        {
+            nonArrivals = (int)MathF.Max(quantityAdded - (itemAdded.MaxInStack - _quantityList[0]), 0);
+        }
+        else
+        {
+            nonArrivals = (int)MathF.Max(quantityAdded - itemAdded.MaxInStack, 0);
+        }
+
         base.AddItem(itemAdded, quantityAdded);
         Update?.Invoke(this);
-        print(MathF.Max(quantityAdded - _quantityList[0], 0));
-        return (int)MathF.Max(quantityAdded - _quantityList[0], 0);
+        return nonArrivals;
     }
 
     public override void RemoveItem(Item itemRemoved, int quantityRemoved)

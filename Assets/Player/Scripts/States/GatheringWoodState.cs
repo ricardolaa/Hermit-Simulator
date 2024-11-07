@@ -10,9 +10,12 @@ public class GatheringWoodState : PlayerBaseState
     [SerializeField] private float _raycastDistance = 2f; 
     [SerializeField] private LayerMask _treeLayer;
 
+    private Inventory _inventory;
+
     private void Start()
     {
         base.InitializeComponents();
+        _inventory = AttachedEntity.GetComponent<Inventory>();
     }
 
     public override void OnEnter()
@@ -47,8 +50,15 @@ public class GatheringWoodState : PlayerBaseState
 
             yield return new WaitForSeconds(_clip.length / 2);
 
+            int quantityTree = 0;
+
             if (tree != null)
-                tree.GetHit();
+                quantityTree = tree.GetHit();
+
+            if (quantityTree > 0)
+            {
+                _inventory.AddItem(tree.TreeItem, quantityTree);
+            }
 
             yield return new WaitForSeconds(_clip.length / 2);
 

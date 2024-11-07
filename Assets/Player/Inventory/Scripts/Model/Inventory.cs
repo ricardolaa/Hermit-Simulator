@@ -39,7 +39,8 @@ public class Inventory : MonoBehaviour
 
             slot = _slotsStorage.GetFreeSlotsForItem(item);
 
-
+            if (slot == null)
+                return;
         }
 
     }

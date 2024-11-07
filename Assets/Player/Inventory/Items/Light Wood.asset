@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5b728530c479d843803971ca11c5f55, type: 3}
   m_Name: Light Wood
   m_EditorClassIdentifier: 
-  _itemName: 
+  _itemName: wood
   _price: 0
   _maxInStack: 10
-  _itemIcon: {fileID: 0}
+  _itemIcon: {fileID: 21300000, guid: b47eb78033e00d64daebd6caa4f12dd0, type: 3}
   _type: 0

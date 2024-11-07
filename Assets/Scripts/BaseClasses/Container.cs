@@ -39,18 +39,11 @@ public abstract class Container : MonoBehaviour
             }
             else
             {
-                for (int i = 0; i < quantityAdded; i++)
+                if (_itemList.Count < SlotCount)
                 {
-                    if (_itemList.Count < SlotCount)
-                    {
-                        _itemList.Add(itemAdded);
-                        _quantityList.Add(1);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
+                    _itemList.Add(itemAdded);
+                    _quantityList.Add(quantityAdded);
+                }               
             }
         }
 
