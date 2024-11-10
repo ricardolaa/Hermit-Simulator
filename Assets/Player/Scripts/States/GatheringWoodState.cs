@@ -56,9 +56,7 @@ public class GatheringWoodState : PlayerBaseState
                 quantityTree = tree.GetHit();
 
             if (quantityTree > 0)
-            {
                 _inventory.AddItem(tree.TreeItem, quantityTree);
-            }
 
             yield return new WaitForSeconds(_clip.length / 2);
 

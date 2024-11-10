@@ -7,7 +7,6 @@ public class SlotsStorage : MonoBehaviour
     [SerializeField] private GameObject _slotPrefab;
 
     private List<InventorySlotModel> _slots = new List<InventorySlotModel>();
-    private List<InventorySlotView> _slotsView = new List<InventorySlotView>();
 
     private Dictionary<InventorySlotModel, (Item, int)> _slotsData = new Dictionary<InventorySlotModel, (Item, int)>();
 
@@ -32,7 +31,6 @@ public class SlotsStorage : MonoBehaviour
             slot.Update += UpdateSlot;
 
             _slots.Add(slot);
-            _slotsView.Add(slotObject.GetComponent<InventorySlotView>());
             _slotsData[slot] = (null, 0);
         }
     }
@@ -45,6 +43,14 @@ public class SlotsStorage : MonoBehaviour
         slot.gameObject.GetComponent<InventorySlotView>().UpdateSlot(itemInSlot, quantityInSlot);
         _slotsData[slot] = (itemInSlot, quantityInSlot);
       
+    }
+
+    public void UpdateAllSlots()
+    {
+        for (int i = 0; i < _slots.Count; i++)
+        {
+            UpdateSlot(_slots[i]);
+        } 
     }
 
     public InventorySlotModel GetFreeSlotsForItem(Item item)

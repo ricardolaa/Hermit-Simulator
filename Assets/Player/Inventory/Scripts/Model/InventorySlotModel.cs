@@ -11,8 +11,10 @@ public class InventorySlotModel : Container
 
     public override int AddItem(Item itemAdded, int quantityAdded)
     {
+        if (quantityAdded < 0)
+            throw new ArgumentOutOfRangeException(nameof(quantityAdded));
+
         int nonArrivals = 0;
-        print(quantityAdded);
 
         if (_quantityList.Count > 0)
         {

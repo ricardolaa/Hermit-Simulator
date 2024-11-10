@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(SlotsStorage))]
 public class Inventory : MonoBehaviour
@@ -24,6 +22,9 @@ public class Inventory : MonoBehaviour
 
     public void AddItem(Item item, int quantity)
     {
+        if (quantity < 0)
+            throw new System.ArgumentOutOfRangeException(nameof(quantity));
+
         int numberArrivals = 0;
         InventorySlotModel slot = _slotsStorage.GetFreeSlotsForItem(item);
 

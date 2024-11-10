@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Container : MonoBehaviour
@@ -13,45 +14,77 @@ public abstract class Container : MonoBehaviour
 
     public virtual int AddItem(Item itemAdded, int quantityAdded)
     {
-        int index = _itemList.LastIndexOf(itemAdded);
+        if (quantityAdded < 0)
+            throw new ArgumentOutOfRangeException(nameof(quantityAdded));
 
         if (itemAdded.Stacable)
         {
-            if (index >= 0)
-            {
-                int currentQuantity = _quantityList[index];
-                int availableSpace = itemAdded.MaxInStack - currentQuantity;
-
-                if (availableSpace > 0)
-                {
-                    int quantityToAdd = Mathf.Min(quantityAdded, availableSpace);
-                    _quantityList[index] += quantityToAdd;
-                    quantityAdded -= quantityToAdd;
-                }
-
-                while (quantityAdded > 0 && _itemList.Count < SlotCount)
-                {
-                    _itemList.Add(itemAdded);
-                    int quantityToAdd = Mathf.Min(quantityAdded, itemAdded.MaxInStack);
-                    _quantityList.Add(quantityToAdd);
-                    quantityAdded -= quantityToAdd;
-                }
-            }
-            else
-            {
-                if (_itemList.Count < SlotCount)
-                {
-                    _itemList.Add(itemAdded);
-                    _quantityList.Add(quantityAdded);
-                }               
-            }
+            HandleStackableItem(itemAdded, ref quantityAdded);
+        }
+        else
+        {
+            HandleNonStackableItem(itemAdded, quantityAdded);
         }
 
         return 0;
     }
 
+    protected virtual void HandleStackableItem(Item itemAdded, ref int quantityAdded)
+    {
+        int index = _itemList.LastIndexOf(itemAdded);
+
+        if (index >= 0)
+        {
+            int currentQuantity = _quantityList[index];
+            int availableSpace = itemAdded.MaxInStack - currentQuantity;
+
+            if (availableSpace > 0)
+            {
+                int quantityToAdd = Mathf.Min(quantityAdded, availableSpace);
+                _quantityList[index] += quantityToAdd;
+                quantityAdded -= quantityToAdd;
+            }
+
+            while (quantityAdded > 0 && _itemList.Count < SlotCount)
+            {
+                _itemList.Add(itemAdded);
+                int quantityToAdd = Mathf.Min(quantityAdded, itemAdded.MaxInStack);
+                _quantityList.Add(quantityToAdd);
+                quantityAdded -= quantityToAdd;
+            }
+        }
+        else
+        {
+            if (_itemList.Count < SlotCount)
+            {
+                _itemList.Add(itemAdded);
+                _quantityList.Add(quantityAdded);
+            }
+        }
+    }
+
+    protected virtual void HandleNonStackableItem(Item itemAdded, int quantityAdded)
+    {
+        for (int i = 0; i < quantityAdded; i++)
+        {
+            if (_itemList.Count < SlotCount)
+            {
+                _itemList.Add(itemAdded);
+                _quantityList.Add(1);
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+
+
     public virtual void RemoveItem(Item itemRemoved, int quantityRemoved)
     {
+        if (quantityRemoved < 0)
+            throw new ArgumentOutOfRangeException(nameof(quantityRemoved));
+
         int index = _itemList.LastIndexOf(itemRemoved);
 
         if (index >= 0)
