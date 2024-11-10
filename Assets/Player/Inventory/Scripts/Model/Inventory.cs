@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 [RequireComponent(typeof(SlotsStorage))]
 public class Inventory : MonoBehaviour
 {
     [SerializeField] private int _slotCount;
     [SerializeField] private SlotsStorage _slotsStorage;
+    [SerializeField] private GameObject _view;
 
     public SlotsStorage SlotsStorage => _slotsStorage;
     public GameObject InventoryPanel => _slotsStorage.SlotsPanel;
@@ -13,6 +15,9 @@ public class Inventory : MonoBehaviour
 
     private void Awake()
     {
+        if (_view == null)
+            throw new System.ArgumentNullException(nameof(_view));
+
         if (_slotsStorage == null)
             _slotsStorage = GetComponent<SlotsStorage>();
 
@@ -44,6 +49,18 @@ public class Inventory : MonoBehaviour
                 return;
         }
 
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            _view.SetActive(!_view.activeSelf);
+            var mouseHandler = GetComponent<PlayerCursorHandler>();
+
+            mouseHandler.ToggleCursorLock();
+            Time.timeScale = !_view.activeSelf ? 1 : 0; ;
+        }
     }
 
 }
